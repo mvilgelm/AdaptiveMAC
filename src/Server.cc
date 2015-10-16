@@ -26,7 +26,9 @@ Server::Server() {
 }
 
 Server::~Server() {
-    // TODO Auto-generated destructor stub
+    cancelAndDelete(checkQTimer);
+    incomings->clear();
+    delete incomings;
 }
 
 void Server::initialize(){
@@ -64,17 +66,23 @@ void Server::processQ(){
 
     cQueue tempQ = cQueue();
 
+
     std::vector<double> errorVector = std::vector<double>();
 
     while (!incomings->isEmpty()){
         ErrorPkt * pkt = check_and_cast<ErrorPkt*> (incomings->pop());
 
         int chnl = pkt->getChannel();
+
+        EV << "Server::processQ() received channel: " << chnl << endl;
+
         it = noCollisions->find(chnl);
 
         if ( it != noCollisions->end()) {
             collisions->insert(chnl);
         }
+
+        noCollisions->insert(chnl);
 
         errorVector.push_back(pkt->getError());
 

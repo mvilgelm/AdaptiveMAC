@@ -24,7 +24,7 @@ Subsystem::Subsystem() {
 }
 
 Subsystem::~Subsystem() {
-    // TODO Auto-generated destructor stub
+    cancelAndDelete(controlTimer);
 }
 
 void Subsystem::initialize(){
@@ -38,6 +38,9 @@ void Subsystem::initialize(){
     controlPeriod = (double)par("controlPeriod");
 
     theta = 0;
+    periodCount=0;
+    errMean = 0;
+    errVar = 0;
 
     server = simulation.getModuleByPath("server");
     //if (!server) error("server not found");
@@ -58,10 +61,16 @@ void Subsystem::handleMessage(cMessage *msg){
     else {
         ErrorPkt *pkt = check_and_cast<ErrorPkt*> (msg);
         bool collision = pkt->getCollision();
-        if (collision)
+        EV << "Subsystem::handleMessage() collision: ";
+
+        if (collision){
             theta=0;
-        else
+            EV << "true" << endl;
+        }
+        else {
             theta=1;
+            EV << "false" << endl;
+        }
         delete pkt;
     }
 }
@@ -71,15 +80,28 @@ void Subsystem::updateError(){
 
     error = (1-theta)*sysA*error + normal(0, sqrt(varW));
     EV << "Err: " << error << endl;
+
+    if (ev.isGUI())
+        updateDisplay();
+
+    theta = 0;
+
+    updateErrVar();
 }
 
 bool Subsystem::decideOnTx(){
     EV << "Subsystem::decideOnTx() entering function." << endl;
 
-    if (abs(error)>Lambda)
+    EV << "Subsystem::decideOnTx() lambda: "<< Lambda << ", error: " << fabs(error) << endl;
+
+    if (fabs(error)>Lambda){
+        EV << "Subsystem::decideOnTx() decision: true" << endl;
         return true;
-    else
+    }
+    else {
+        EV << "Subsystem::decideOnTx() decision: false" << endl;
         return false;
+    }
 }
 
 void Subsystem::transmit(){
@@ -92,5 +114,25 @@ void Subsystem::transmit(){
     pkt->setChannel(channel);
     pkt->setError(error);
 
+    EV << "Subsystem::transmit() channel choice: " << channel << endl;
+
     sendDirect(pkt, server->gate("in"));
+}
+
+void Subsystem::updateErrVar(){
+    periodCount++;
+    double delta = error - errMean;
+    errMean += delta/((double)periodCount);
+    errVar += delta*(error-errMean);
+}
+
+void Subsystem::finish(){
+    recordScalar("errVar", errVar/((double)periodCount-1));
+}
+
+void Subsystem::updateDisplay(){
+    char buf[30];
+    sprintf(buf, "err: %.4f", error);
+    getDisplayString().setTagArg("t",0,buf);
+    getParentModule()->getDisplayString().setTagArg("t",0,buf);
 }

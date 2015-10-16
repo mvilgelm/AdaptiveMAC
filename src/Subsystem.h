@@ -24,6 +24,8 @@ class Subsystem: public cSimpleModule {
 protected:
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
+    virtual void finish();
+    void updateDisplay();
 
 public:
     Subsystem();
@@ -47,6 +49,12 @@ private:
     double error;
     int theta;
 
+    //required for updating the error variance
+    void updateErrVar();
+
+    double errVar;
+    int periodCount;
+    double errMean;
 
 };
 
