@@ -22,6 +22,9 @@
 class Subsystem: public cSimpleModule {
 
 protected:
+    /**
+     * Standard functions
+     */
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
     virtual void finish();
@@ -32,8 +35,19 @@ public:
     virtual ~Subsystem();
 
 private:
+    /*
+     * timer for error updates
+     */
     cMessage * controlTimer;
+
+    /*
+     * access to the server module
+     */
     cModule *server;
+
+    /*
+     * parameters
+     */
     double sysA;
     double varW;
     double Lambda;
@@ -41,17 +55,35 @@ private:
     int id;
     double controlPeriod;
 
+    /**
+     * Update the error status based on dynamics
+     */
     void updateError();
+
+    /**
+     * Check whether transmission is to be attempted
+     */
     bool decideOnTx();
+
+    /**
+     * Attempt a transmission
+     */
     void transmit();
 
-    //error
+    /*
+     * error state
+     */
     double error;
-    int theta;
+    int theta; //was transmission successful or not?
 
-    //required for updating the error variance
+    /**
+     * Online error variance calculation
+     */
     void updateErrVar();
 
+    /*
+     * For mean and error variance tracking
+     */
     double errVar;
     int periodCount;
     double errMean;

@@ -26,16 +26,25 @@ protected:
     virtual void handleMessage(cMessage *msg);
     virtual void finish();
 
+    /*
+     * parameters
+     */
     cMessage * checkQTimer;
     double controlPeriod;
     int M;
 
     cQueue * incomings;
 
+    /*
+     * statistics
+     */
     long successCount;
     long accessCount;
     long periodCount;
 
+    /**
+     * Process the queue with incoming transmissions
+     */
     void processQ();
 
 public:

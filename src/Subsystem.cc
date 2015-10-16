@@ -90,22 +90,21 @@ void Subsystem::updateError(){
 }
 
 bool Subsystem::decideOnTx(){
-    EV << "Subsystem::decideOnTx() entering function." << endl;
-
-    EV << "Subsystem::decideOnTx() lambda: "<< Lambda << ", error: " << fabs(error) << endl;
+    //EV << "Subsystem::decideOnTx() entering function." << endl;
+    //EV << "Subsystem::decideOnTx() lambda: "<< Lambda << ", error: " << fabs(error) << endl;
 
     if (fabs(error)>Lambda){
-        EV << "Subsystem::decideOnTx() decision: true" << endl;
+        //EV << "Subsystem::decideOnTx() decision: true" << endl;
         return true;
     }
     else {
-        EV << "Subsystem::decideOnTx() decision: false" << endl;
+        //EV << "Subsystem::decideOnTx() decision: false" << endl;
         return false;
     }
 }
 
 void Subsystem::transmit(){
-    EV << "Subsystem::transmit() entering function." << endl;
+    //EV << "Subsystem::transmit() entering function." << endl;
 
     int channel = intuniform(1,M);
 

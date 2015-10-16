@@ -21,11 +21,12 @@ Define_Module(Server);
 #include "ErrorPkt_m.h"
 
 Server::Server() {
-    // TODO Auto-generated constructor stub
+    //do stuff in initialize
 
 }
 
 Server::~Server() {
+    //cleanup
     cancelAndDelete(checkQTimer);
     incomings->clear();
     delete incomings;
@@ -34,18 +35,20 @@ Server::~Server() {
 void Server::initialize(){
     EV << "Server::initialize() entering function" << endl;
 
+    //statistic
     successCount = 0;
     periodCount = 0;
     accessCount = 0;
 
     checkQTimer = new cMessage("checkQTimer");
 
+    //parameters
     controlPeriod = (double)par("controlPeriod");
     M = (int)par("M");
 
     incomings = new cQueue();
 
-    //initial offset for the control period
+    //initial offset for the control period: not to intercept with the incomings
     scheduleAt(simTime()+controlPeriod+controlPeriod/4, checkQTimer);
 }
 
@@ -53,11 +56,13 @@ void Server::handleMessage(cMessage *msg){
     EV << "Server::handleMessage() entering function" << endl;
 
     if (msg->isSelfMessage()){
+        //self-timer for checking the queue
         periodCount++;
         processQ();
         scheduleAt(simTime()+controlPeriod, checkQTimer);
     }
     else {
+        //message from control loop, inqueue
         incomings->insert(msg);
     }
 }
@@ -75,9 +80,11 @@ void Server::processQ(){
 
     std::vector<double> errorVector = std::vector<double>();
 
+    //record for statistics
     int attempts = incomings->getLength();
     accessCount += attempts;
 
+    //go through list of messages and choose collided channels
     while (!incomings->isEmpty()){
         ErrorPkt * pkt = check_and_cast<ErrorPkt*> (incomings->pop());
 
@@ -98,6 +105,7 @@ void Server::processQ(){
         tempQ.insert(pkt);
     }
 
+    //go through list of messages and send replies
     while (!tempQ.isEmpty()){
         ErrorPkt * pkt = check_and_cast<ErrorPkt*> (tempQ.pop());
         int chnl = pkt->getChannel();
@@ -118,6 +126,7 @@ void Server::processQ(){
         }
     }
 
+    //cleanup
     incomings->clear();
     tempQ.clear();
 
