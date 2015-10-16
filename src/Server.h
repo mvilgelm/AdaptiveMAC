@@ -24,11 +24,15 @@ class Server: public cSimpleModule {
 protected:
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
+    virtual void finish();
 
     cMessage * checkQTimer;
     double controlPeriod;
 
     cQueue * incomings;
+
+    long successCount;
+    long periodCount;
 
     void processQ();
 

@@ -34,6 +34,9 @@ Server::~Server() {
 void Server::initialize(){
     EV << "Server::initialize() entering function" << endl;
 
+    successCount = 0;
+    periodCount = 0;
+
     checkQTimer = new cMessage("checkQTimer");
 
     controlPeriod = (double)par("controlPeriod");
@@ -48,6 +51,7 @@ void Server::handleMessage(cMessage *msg){
     EV << "Server::handleMessage() entering function" << endl;
 
     if (msg->isSelfMessage()){
+        periodCount++;
         processQ();
         scheduleAt(simTime()+controlPeriod, checkQTimer);
     }
@@ -68,6 +72,8 @@ void Server::processQ(){
 
 
     std::vector<double> errorVector = std::vector<double>();
+
+    attempts = incoming->size();
 
     while (!incomings->isEmpty()){
         ErrorPkt * pkt = check_and_cast<ErrorPkt*> (incomings->pop());
@@ -109,8 +115,14 @@ void Server::processQ(){
         }
     }
 
+    successCount += (attempts - collisions->size());
+
     incomings->clear();
     tempQ.clear();
 
+}
+
+void Server::finish(){
+    recordScalar("Throughput", (float)successCount/((float)periodCount*(float)M));
 }
 
