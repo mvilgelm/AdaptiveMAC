@@ -1,0 +1,3 @@
+package adaptivethreshold;
+
+@license(LGPL);
