@@ -28,10 +28,12 @@ protected:
 
     cMessage * checkQTimer;
     double controlPeriod;
+    int M;
 
     cQueue * incomings;
 
     long successCount;
+    long accessCount;
     long periodCount;
 
     void processQ();

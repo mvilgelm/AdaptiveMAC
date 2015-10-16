@@ -36,10 +36,12 @@ void Server::initialize(){
 
     successCount = 0;
     periodCount = 0;
+    accessCount = 0;
 
     checkQTimer = new cMessage("checkQTimer");
 
     controlPeriod = (double)par("controlPeriod");
+    M = (int)par("M");
 
     incomings = new cQueue();
 
@@ -73,7 +75,8 @@ void Server::processQ(){
 
     std::vector<double> errorVector = std::vector<double>();
 
-    attempts = incoming->size();
+    int attempts = incomings->getLength();
+    accessCount += attempts;
 
     while (!incomings->isEmpty()){
         ErrorPkt * pkt = check_and_cast<ErrorPkt*> (incomings->pop());
@@ -105,7 +108,7 @@ void Server::processQ(){
         if ( it == collisions->end()) {
             //no collision, send positive feedback
             pkt->setCollision(false);
-
+            successCount++;
             sendDirect(pkt, subSys->gate("in"));
         }
         else {
@@ -115,8 +118,6 @@ void Server::processQ(){
         }
     }
 
-    successCount += (attempts - collisions->size());
-
     incomings->clear();
     tempQ.clear();
 
@@ -124,5 +125,6 @@ void Server::processQ(){
 
 void Server::finish(){
     recordScalar("Throughput", (float)successCount/((float)periodCount*(float)M));
+    recordScalar("Access", (float)accessCount/((float)periodCount*(float)M));
 }
 
