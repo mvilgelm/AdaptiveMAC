@@ -39,6 +39,7 @@ protected:
      * statistics
      */
     long successCount;
+    long collisionCount;
     long accessCount;
     long periodCount;
 

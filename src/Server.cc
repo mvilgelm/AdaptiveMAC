@@ -39,6 +39,7 @@ void Server::initialize(){
     successCount = 0;
     periodCount = 0;
     accessCount = 0;
+    collisionCount = 0;
 
     checkQTimer = new cMessage("checkQTimer");
 
@@ -121,6 +122,7 @@ void Server::processQ(){
         }
         else {
             //collision, send negative feedback
+            collisionCount++;
             pkt->setCollision(true);
             sendDirect(pkt, subSys->gate("in"));
         }
@@ -135,5 +137,6 @@ void Server::processQ(){
 void Server::finish(){
     recordScalar("Throughput", (float)successCount/((float)periodCount*(float)M));
     recordScalar("Access", (float)accessCount/((float)periodCount*(float)M));
+    recordScalar("Collisions", (float)collisionCount/((float)periodCount*(float)M));
 }
 
