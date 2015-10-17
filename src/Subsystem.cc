@@ -126,7 +126,7 @@ bool Subsystem::decideOnTx(){
             }
         }
         else {
-            if (fabs(error)>lambdaLookupTable(5,N)){
+            if (fabs(error)>lambdaLookupTable(10,N)){
                 //EV << "Subsystem::decideOnTx() decision: true" << endl;
                 return true;
             }
@@ -187,6 +187,8 @@ double Subsystem::lambdaLookupTable(int m, int n){
             return 3.5;
         case 14:
             return 5.2;
+        case 16:
+            return 8.1;
         }
     }
     case 10: {
@@ -203,6 +205,8 @@ double Subsystem::lambdaLookupTable(int m, int n){
             return 1.4;
         case 14:
             return 1.6;
+        case 16:
+            return 1.8;
         }
     }
     }
