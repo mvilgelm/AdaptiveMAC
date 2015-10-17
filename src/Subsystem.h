@@ -52,8 +52,11 @@ private:
     double varW;
     double Lambda;
     int M;
+    int N;
     int id;
     double controlPeriod;
+
+    bool adaptLambda;
 
     /**
      * Update the error status based on dynamics
@@ -87,6 +90,8 @@ private:
     double errVar;
     int periodCount;
     double errMean;
+
+    double lambdaLookupTable();
 
 };
 

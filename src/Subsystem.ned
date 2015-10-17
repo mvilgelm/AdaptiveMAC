@@ -26,6 +26,7 @@ simple Subsystem
     	double controlPeriod @unit(s);
     	int M;
     	double Lambda;
+    	bool adaptLambda = default(false);
     gates:
         input in @directIn;
         //output out;

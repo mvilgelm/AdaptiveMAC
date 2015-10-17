@@ -35,7 +35,10 @@ void Subsystem::initialize(){
     sysA = (double)par("sysA");
     Lambda = (double)par("Lambda");
     M = (int)par("M");
+    N = (int)par("N");
     controlPeriod = (double)par("controlPeriod");
+
+    adaptLambda = (bool)par("adaptLambda");
 
     theta = 0;
     periodCount=0;
@@ -93,13 +96,26 @@ bool Subsystem::decideOnTx(){
     //EV << "Subsystem::decideOnTx() entering function." << endl;
     //EV << "Subsystem::decideOnTx() lambda: "<< Lambda << ", error: " << fabs(error) << endl;
 
-    if (fabs(error)>Lambda){
-        //EV << "Subsystem::decideOnTx() decision: true" << endl;
-        return true;
+    if (!adaptLambda) {
+
+        if (fabs(error)>Lambda){
+            //EV << "Subsystem::decideOnTx() decision: true" << endl;
+            return true;
+        }
+        else {
+            //EV << "Subsystem::decideOnTx() decision: false" << endl;
+            return false;
+        }
     }
     else {
-        //EV << "Subsystem::decideOnTx() decision: false" << endl;
-        return false;
+        if (fabs(error)>lambdaLookupTable()){
+            //EV << "Subsystem::decideOnTx() decision: true" << endl;
+            return true;
+        }
+        else {
+            //EV << "Subsystem::decideOnTx() decision: false" << endl;
+            return false;
+        }
     }
 }
 
@@ -134,4 +150,41 @@ void Subsystem::updateDisplay(){
     sprintf(buf, "err: %.4f", error);
     getDisplayString().setTagArg("t",0,buf);
     getParentModule()->getDisplayString().setTagArg("t",0,buf);
+}
+
+double Subsystem::lambdaLookupTable(){
+    switch (M) {
+    case 5: {
+        switch (N) {
+        case 4:
+            return 1.0;
+        case 6:
+            return 1.5;
+        case 8:
+            return 2.0;
+        case 10:
+            return 2.4;
+        case 12:
+            return 3.5;
+        case 14:
+            return 5.2;
+        }
+    }
+    case 10: {
+        switch (N) {
+        case 4:
+            return 0.6;
+        case 6:
+            return 0.8;
+        case 8:
+            return 1.0;
+        case 10:
+            return 1.2;
+        case 12:
+            return 1.4;
+        case 14:
+            return 1.6;
+        }
+    }
+    }
 }
