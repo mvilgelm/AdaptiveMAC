@@ -123,5 +123,6 @@ $O/Server.o: Server.cc \
 	Server.h
 $O/Subsystem.o: Subsystem.cc \
 	ErrorPkt_m.h \
+	Server.h \
 	Subsystem.h
 

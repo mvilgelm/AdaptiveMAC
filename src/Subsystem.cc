@@ -15,6 +15,7 @@
 
 #include <src/Subsystem.h>
 #include "ErrorPkt_m.h"
+#include "Server.h"
 
 Define_Module(Subsystem);
 
@@ -39,6 +40,7 @@ void Subsystem::initialize(){
     controlPeriod = (double)par("controlPeriod");
 
     adaptLambda = (bool)par("adaptLambda");
+    adaptationExperiment = (bool)par("adaptationExperiment");
 
     theta = 0;
     periodCount=0;
@@ -55,6 +57,11 @@ void Subsystem::handleMessage(cMessage *msg){
     EV << "Subsystem::handleMessage() entering function." << endl;
 
     if (msg == controlTimer){
+        if (adaptationExperiment){
+            Server *srv = check_and_cast<Server*> (server);
+            M = srv->getM();
+        }
+
         updateError();
         if (decideOnTx()){
             transmit();
@@ -96,7 +103,7 @@ bool Subsystem::decideOnTx(){
     //EV << "Subsystem::decideOnTx() entering function." << endl;
     //EV << "Subsystem::decideOnTx() lambda: "<< Lambda << ", error: " << fabs(error) << endl;
 
-    if (!adaptLambda) {
+    if (!adaptationExperiment) {
 
         if (fabs(error)>Lambda){
             //EV << "Subsystem::decideOnTx() decision: true" << endl;
@@ -108,13 +115,25 @@ bool Subsystem::decideOnTx(){
         }
     }
     else {
-        if (fabs(error)>lambdaLookupTable()){
-            //EV << "Subsystem::decideOnTx() decision: true" << endl;
-            return true;
+        if (adaptLambda) {
+            if (fabs(error)>lambdaLookupTable(M,N)){
+                //EV << "Subsystem::decideOnTx() decision: true" << endl;
+                return true;
+            }
+            else {
+                //EV << "Subsystem::decideOnTx() decision: false" << endl;
+                return false;
+            }
         }
         else {
-            //EV << "Subsystem::decideOnTx() decision: false" << endl;
-            return false;
+            if (fabs(error)>lambdaLookupTable(5,N)){
+                //EV << "Subsystem::decideOnTx() decision: true" << endl;
+                return true;
+            }
+            else {
+                //EV << "Subsystem::decideOnTx() decision: false" << endl;
+                return false;
+            }
         }
     }
 }
@@ -152,10 +171,10 @@ void Subsystem::updateDisplay(){
     getParentModule()->getDisplayString().setTagArg("t",0,buf);
 }
 
-double Subsystem::lambdaLookupTable(){
-    switch (M) {
+double Subsystem::lambdaLookupTable(int m, int n){
+    switch (m) {
     case 5: {
-        switch (N) {
+        switch (n) {
         case 4:
             return 1.0;
         case 6:
@@ -171,7 +190,7 @@ double Subsystem::lambdaLookupTable(){
         }
     }
     case 10: {
-        switch (N) {
+        switch (n) {
         case 4:
             return 0.6;
         case 6:
@@ -187,4 +206,5 @@ double Subsystem::lambdaLookupTable(){
         }
     }
     }
+    EV << "didn't find any matching value" << endl;
 }

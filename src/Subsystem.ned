@@ -25,8 +25,10 @@ simple Subsystem
     	double varW;
     	double controlPeriod @unit(s);
     	int M;
+    	int N;
     	double Lambda;
     	bool adaptLambda = default(false);
+    	bool adaptationExperiment = default(false);
     gates:
         input in @directIn;
         //output out;

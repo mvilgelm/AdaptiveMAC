@@ -57,6 +57,7 @@ private:
     double controlPeriod;
 
     bool adaptLambda;
+    bool adaptationExperiment;
 
     /**
      * Update the error status based on dynamics
@@ -91,7 +92,7 @@ private:
     int periodCount;
     double errMean;
 
-    double lambdaLookupTable();
+    double lambdaLookupTable(int m, int n);
 
 };
 

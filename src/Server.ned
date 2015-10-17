@@ -22,6 +22,8 @@ simple Server
 {
     parameters:
         double controlPeriod @unit(s);
+        bool adaptationExperiment = default(false);
+        double pG;
         int M;
     gates:
         input in @directIn;

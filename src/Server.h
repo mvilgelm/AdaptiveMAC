@@ -43,10 +43,21 @@ protected:
     long accessCount;
     long periodCount;
 
+
     /**
      * Process the queue with incoming transmissions
      */
     void processQ();
+
+    /**
+     * for M lookups in case of adaptation
+     */
+public:
+    int getM();
+    double pG;
+
+    bool adaptationExperiment;
+
 
 public:
     Server();

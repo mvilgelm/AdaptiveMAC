@@ -41,6 +41,10 @@ void Server::initialize(){
     accessCount = 0;
     collisionCount = 0;
 
+    //probability of good channel
+    pG = (double)par("pG");
+    adaptationExperiment = (bool)par("adaptationExperiment");
+
     checkQTimer = new cMessage("checkQTimer");
 
     //parameters
@@ -58,6 +62,13 @@ void Server::handleMessage(cMessage *msg){
 
     if (msg->isSelfMessage()){
         //self-timer for checking the queue
+        if (adaptationExperiment){
+            if (bernoulli(pG))
+                M = 10;
+            else
+                M = 5;
+        }
+
         periodCount++;
         processQ();
         scheduleAt(simTime()+controlPeriod, checkQTimer);
@@ -138,5 +149,9 @@ void Server::finish(){
     recordScalar("Throughput", (float)successCount/((float)periodCount*(float)M));
     recordScalar("Access", (float)accessCount/((float)periodCount*(float)M));
     recordScalar("Collisions", (float)collisionCount/((float)periodCount*(float)M));
+}
+
+int Server::getM(){
+    return M;
 }
 
