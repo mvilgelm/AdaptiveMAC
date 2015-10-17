@@ -126,7 +126,7 @@ bool Subsystem::decideOnTx(){
             }
         }
         else {
-            if (fabs(error)>lambdaLookupTable(10,N)){
+            if (fabs(error)>lambdaLookupTable(5,N)){
                 //EV << "Subsystem::decideOnTx() decision: true" << endl;
                 return true;
             }
