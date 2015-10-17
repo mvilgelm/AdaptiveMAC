@@ -73,7 +73,7 @@ private:
     /*
      * error state
      */
-    double error;
+    long double error;
     int theta; //was transmission successful or not?
 
     /**
