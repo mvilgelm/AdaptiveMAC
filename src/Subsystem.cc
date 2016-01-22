@@ -154,6 +154,9 @@ void Subsystem::transmit(){
 }
 
 void Subsystem::updateErrVar(){
+    //online variance calculation algorithm
+    //storing all the values becomes a burden on the filesystem...
+
     periodCount++;
     double delta = error - errMean;
     errMean += delta/((double)periodCount);

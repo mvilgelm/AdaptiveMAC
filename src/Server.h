@@ -30,8 +30,8 @@ protected:
      * parameters
      */
     cMessage * checkQTimer;
-    double controlPeriod;
-    int M;
+    double controlPeriod; //length of the control period
+    int M; //number of channels
 
     cQueue * incomings;
 
@@ -49,14 +49,15 @@ protected:
      */
     void processQ();
 
-    /**
-     * for M lookups in case of adaptation
-     */
 public:
+    /**
+     * for M lookups (from the subsystems' side) in case of adaptation
+     */
     int getM();
-    double pG;
 
-    bool adaptationExperiment;
+    double pG; //probability of the "good" channel state
+
+    bool adaptationExperiment; //defines whether the adaptation experiment is running or not
 
 
 public:

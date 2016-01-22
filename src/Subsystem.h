@@ -48,15 +48,23 @@ private:
     /*
      * parameters
      */
-    double sysA;
-    double varW;
-    double Lambda;
-    int M;
-    int N;
-    int id;
+    double sysA; //A_i
+    double varW; //noise variance w_i
+    double Lambda; //transmission threshold - if static
+    int M; //number of channels - changing if (adaptationExperiment)
+    int N; //number of subsystems
+    int id; //own id in the simulation
     double controlPeriod;
 
+    /**
+     * Indicates whether the use a static or adaptive scheduler
+     */
     bool adaptLambda;
+    /**
+     * Indicates the type of experiment running:
+     * if (!adaptationExperiment) static value for M is used,
+     * otherwise it is changing according to pG
+     */
     bool adaptationExperiment;
 
     /**
@@ -92,6 +100,9 @@ private:
     int periodCount;
     double errMean;
 
+    /**
+     * Just the lookup table for the adaptation experiment. Values are same as in Table 2 from the paper.
+     */
     double lambdaLookupTable(int m, int n);
 
 };
