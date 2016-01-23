@@ -68,6 +68,12 @@ private:
     bool adaptationExperiment;
 
     /**
+     * If it is non-adaptive scheduler we need to know default M value
+     * Never used if it is not adaptation experiment
+     */
+    int defaultM;
+
+    /**
      * Update the error status based on dynamics
      */
     void updateError();

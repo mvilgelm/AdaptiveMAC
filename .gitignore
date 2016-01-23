@@ -9,7 +9,7 @@
 *.sca
 *.vec
 *.anf
-.settings/
+#.settings/
 # ignore binary files
 out/
 *.so

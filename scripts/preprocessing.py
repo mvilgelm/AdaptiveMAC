@@ -19,7 +19,7 @@ from os.path import isfile, join
 import sys, re
 
 
-def compile_results(f_out_name, metric='errVar'):
+def compile_results(f_out_name, metric, config):
 
 	# directory with the result files
 	path = '../src/results/'
@@ -29,7 +29,7 @@ def compile_results(f_out_name, metric='errVar'):
 	system('mkdir ' + tempdir)
 
 	# see all the result files
-	files = [f for f in listdir(path) if isfile(join(path, f))]
+	files = [f for f in listdir(path) if (isfile(join(path, f)) and (config in f))]
 
 	files.sort(key = lambda x: int(re.findall('-(.+?).sca', x)[0]))
 
@@ -54,13 +54,13 @@ def compile_results(f_out_name, metric='errVar'):
 		lines.pop(0)
 
 		for line in lines:
-			values = re.findall('errVar,(.+?)\r\n', line)		
+			values = re.findall(metric+',(.+?)\r\n', line)		
 			
 			if len(values)==1:			
 				# print('writing into file')
 				f_out.write(str(values[0])+' ')
 			else:
-				print(values)
+				print('incorrect value')
 
 		cf.close()
 
@@ -68,9 +68,13 @@ def compile_results(f_out_name, metric='errVar'):
 
 	# --- cleanup --- #
 	system('rm -r ' + tempdir)
-	# system('rm ' + path+'*.sca')
+	# remove_simdata()
 
 	return True
+
+def remove_simdata():
+	system('rm ' + '../src/results/*.sca')
+
 
 if __name__ == '__main__':
 	# here comes unit test

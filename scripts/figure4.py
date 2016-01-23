@@ -15,13 +15,13 @@ import scipy.stats
 import matplotlib.pyplot as plt
 import ci
 import matplotlib
-from preprocessing import compile_results
+from preprocessing import compile_results, remove_simdata
 
 
 
 # --- preprocessing --- #
 
-compile_results('fig4')
+compile_results('fig4', 'errVar', 'Fig4')
 
 lines = []
 
@@ -64,8 +64,9 @@ for i_s in n_s:
         results[n_s.index(i_s)].append(np.mean(var))
         results_box[n_s.index(i_s)].append(list(var))
         results_ci[n_s.index(i_s)].append(ci.getCI(var))
-print i
+
 f.close()
+remove_simdata()
 
 # --- plotting --- #
 

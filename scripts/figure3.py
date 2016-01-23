@@ -16,14 +16,14 @@ import scipy.stats
 import matplotlib.pyplot as plt
 import ci
 import os
-from preprocessing import compile_results
+from preprocessing import compile_results, remove_simdata
 
 # variance_mean = []
 # variance_ci = []
 variance_box = []
 
 # preprocess the data
-compile_results('fig3')
+compile_results('fig3', 'errVar', 'Fig3')
 
 # open results of preprocessing
 f = open("../export/fig3_data")
@@ -57,6 +57,7 @@ for i_s in n_s:
 # --- cleanup --- #
 f.close()
 os.system('rm ../export/fig3_data')
+remove_simdata()
 
 # --- plotting --- #
 

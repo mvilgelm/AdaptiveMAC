@@ -41,6 +41,7 @@ void Subsystem::initialize(){
 
     adaptLambda = (bool)par("adaptLambda");
     adaptationExperiment = (bool)par("adaptationExperiment");
+    defaultM = (int)par("defaultM");
 
     theta = 0;
     periodCount=0;
@@ -126,7 +127,7 @@ bool Subsystem::decideOnTx(){
             }
         }
         else {
-            if (fabs(error)>lambdaLookupTable(5,N)){
+            if (fabs(error)>lambdaLookupTable(defaultM,N)){
                 //EV << "Subsystem::decideOnTx() decision: true" << endl;
                 return true;
             }

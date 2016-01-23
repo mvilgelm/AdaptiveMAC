@@ -9,11 +9,6 @@ import scipy.stats
 import matplotlib.pyplot as plt
 import ci
 
-
-numPeriods = 200000
-
-# --- 10-50 subsystems --- #
-
 variance_mean = []
 variance_ci = []
 variance_box = []
@@ -26,19 +21,11 @@ variance_nab_mean = []
 variance_nab_ci = []
 variance_nab_box = []
 
-# f = open("/home/ga49zav/sim/Control/SimpleAdaptation/export/4-adaptation-p-1.csv")
-# lines = f.read().split(' ')
-
-# f1 = open("/home/ga49zav/sim/Control/SimpleAdaptation/export/p_0_non-adaptive-1.csv")
-# lines1 = f1.read().split(' ')
-
 n_s = [4, 10, 14]
-# n_s = [60]
-# n_s = [26*x for x in range(1, 6)]
-n_rep = 100
+# n_rep = 100
 
-p_g = [float(x)/10 for x in range(11)]
-print(p_g)
+p_g = [0.1+float(x)/10 for x in range(10)]
+# print(p_g)
 
 
 
@@ -84,27 +71,23 @@ for i_s in n_s:
             if value:
                 # variance_box.append(list(var))
                 variance_mean.append(np.mean(var))
-                variance_ci.append(ci.getCI(var))
+                # variance_ci.append(ci.getCI(var))
             else:
                 # variance_na_box.append(list(var))
                 variance_na_mean.append(np.mean(var))
-                variance_na_ci.append(ci.getCI(var))
+                # variance_na_ci.append(ci.getCI(var))
     # p.append(ax.plot(p_g, variance_mean))
     # p.append(ax.plot(p_g, variance_na_mean))
 
-    print(len(variance_na_mean))
-    print(len(variance_mean))
     difference = []
     difference_ci = []
     for i in range(len(variance_mean)):
         difference.append((variance_na_mean[i] - variance_mean[i])/variance_na_mean[i])
-        difference_ci.append((variance_na_ci[i] - variance_ci[i])/variance_na_ci[i])
-    # p.append(ax.plot(p_g, variance_mean))
-    print(len(difference))
-    print(difference_ci)
+        # difference_ci.append((variance_na_ci[i] - variance_ci[i])/variance_na_ci[i])
+    
 
     #p.append(ax.errorbar(p_g, difference, yerr=difference_ci))
-    p.append(ax.plot(p_g[1:], difference[1:], '.-'))
+    p.append(ax.plot(p_g, difference, '.-'))
 
 f.close()
 # f1.close()
@@ -142,9 +125,6 @@ for item in [ax.xaxis.label, ax.yaxis.label]:
 
 ax.legend((p[0][0], p[1][0], p[2][0]), (r'$N=4$', r'$N=10$', r'$N=14$'), loc=0, prop=font_prop)
 
-
 ax.autoscale_view()
 
-# plt.show()
-
-plt.savefig('/home/ga49zav/Dropbox/Lkn/hscc2016/images/p_adaptation.pdf', format='pdf', bbox_inches='tight')
+plt.show()

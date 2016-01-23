@@ -28,6 +28,7 @@ simple Subsystem
     	int N;
     	double Lambda;
     	bool adaptLambda = default(false);
+    	int defaultM = default(10);
     	bool adaptationExperiment = default(false);
     gates:
         input in @directIn;
