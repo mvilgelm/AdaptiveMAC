@@ -39,5 +39,5 @@ ui/com.simulte.configeditor/bin/
 /simulations/results*/
 /simulations/*/*/results*/
 /simulations/*/*/*/results*/
-
 *.mat
+*.pyc

@@ -1,9 +1,10 @@
 '''
-This file is part of the Repeatability Evaluation submissions for the ACM HSCC'16.
+This file is part of the Repeatability Evaluation submission for the ACM HSCC'16.
 Paper title: Adaptive Decentralized MAC for Event-Triggered Networked Control Systems
 
-Code authors: 
-Mikhail Vilgelm mikhail.vilgelm@tum.de
+Contact:
+Mikhail Vilgelm 
+mikhail.vilgelm@tum.de
 
 Copyright (c) Chair of Communication Networks, Technical University of Munich
 '''
@@ -15,13 +16,14 @@ import scipy.stats
 import matplotlib.pyplot as plt
 import ci
 import os
+from preprocessing import compile_results
 
 # variance_mean = []
 # variance_ci = []
 variance_box = []
 
 # preprocess the data
-os.system('python compile_results.py fig3')
+compile_results('fig3')
 
 # open results of preprocessing
 f = open("../export/fig3_data")
@@ -55,6 +57,7 @@ for i_s in n_s:
 # --- cleanup --- #
 f.close()
 os.system('rm ../export/fig3_data')
+
 # --- plotting --- #
 
 p0 = ax.boxplot(variance_box)
