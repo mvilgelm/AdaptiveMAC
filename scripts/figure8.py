@@ -1,13 +1,22 @@
+'''
+This file is part of the Repeatability Evaluation submission for the ACM HSCC'16.
+Paper title: Adaptive Decentralized MAC for Event-Triggered Networked Control Systems
+
+Contact: 
+Mikhail Vilgelm
+mikhail.vilgelm@tum.de
+
+Copyright (c) Chair of Communication Networks, Technical University of Munich
+'''
 
 import numpy as np
-
 import matplotlib
-
 import scipy as sp
 import scipy.stats
-
 import matplotlib.pyplot as plt
 import ci
+
+from preprocessing import compile_results, remove_simdata
 
 variance_mean = []
 variance_ci = []
@@ -22,12 +31,9 @@ variance_nab_ci = []
 variance_nab_box = []
 
 n_s = [4, 10, 14]
-# n_rep = 100
+n_rep = 30
 
 p_g = [0.1+float(x)/10 for x in range(10)]
-# print(p_g)
-
-
 
 fig, ax = plt.subplots(figsize=(8.5, 5))
 
@@ -35,13 +41,12 @@ p = [] # plots
 
 for i_s in n_s:
     # every number of subsystems
+    compile_results('fig8n' + str(i_s), 'errVar', 'Fig8N'+str(i_s))
 
-    f = open("/home/ga49zav/sim/Control/SimpleAdaptation/export/"+str(i_s) +"-adaptation-p-1.csv")
+    # f = open("../export/_outdated/"+str(i_s) +"-adaptation-p-1.csv")
+    f = open("../export/fig8n" + str(i_s) + '_data')
     lines = f.read().split(' ')
-
     i = 0
-
-    difference = []
 
     variance_mean = []
     variance_na_mean = []
@@ -89,8 +94,10 @@ for i_s in n_s:
     #p.append(ax.errorbar(p_g, difference, yerr=difference_ci))
     p.append(ax.plot(p_g, difference, '.-'))
 
-f.close()
-# f1.close()
+    f.close()
+
+# remove_simdata()
+
 
 # --- plotting --- #
 

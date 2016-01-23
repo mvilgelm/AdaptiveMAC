@@ -20,6 +20,7 @@ import sys, re
 
 
 def compile_results(f_out_name, metric, config):
+	print('########## Starting preprocessing')
 
 	# directory with the result files
 	path = '../src/results/'
@@ -37,7 +38,7 @@ def compile_results(f_out_name, metric, config):
 
 	# generate csv from result files
 	for f in files:
-		system('scavetool s -p "%s" -O temp/%s.csv -F csv %s'%(metric, f,path+f))
+		system('scavetool s -p "%s" -O temp/%s.csv -F csv %s'%(metric, f, path+f))
 
 	# process all csv and compile one file out of them
 	csv_files = [f for f in listdir(tempdir) if isfile(join(tempdir, f))]
@@ -69,7 +70,7 @@ def compile_results(f_out_name, metric, config):
 	# --- cleanup --- #
 	system('rm -r ' + tempdir)
 	# remove_simdata()
-
+	print('########## Finished preprocessing')
 	return True
 
 def remove_simdata():
