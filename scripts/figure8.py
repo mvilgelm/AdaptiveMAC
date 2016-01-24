@@ -42,8 +42,7 @@ p = [] # plots
 for i_s in n_s:
     # every number of subsystems
     compile_results('fig8n' + str(i_s), 'errVar', 'Fig8N'+str(i_s))
-
-    # f = open("../export/_outdated/"+str(i_s) +"-adaptation-p-1.csv")
+    
     f = open("../export/fig8n" + str(i_s) + '_data')
     lines = f.read().split(' ')
     i = 0
@@ -56,42 +55,29 @@ for i_s in n_s:
         for p_g_i in p_g:
 
             var = []
-            diff = []
-            # var_na = []
+            diff = []            
 
             for i_rep in range(n_rep):
 
-                # print(str(i_s) + ' ' + str(value) + ' ' + str(p_g_i) + ' ' + str(i_rep))
                 # every replication
                 var_temp = []
                 # var_na_temp = []
                 for s in range(i_s):
                     # every subsystem in the replication
                     var_temp.append(float(lines[i]))
-                    # var_na_temp.append(float(lines1[i]))
                     i += 1
                 var.append(np.mean(var_temp))
-                # var_na.append(np.mean(var_na_temp))
-
-            if value:
-                # variance_box.append(list(var))
-                variance_mean.append(np.mean(var))
-                # variance_ci.append(ci.getCI(var))
+                
+            if value:                
+                variance_mean.append(np.mean(var))                
             else:
-                # variance_na_box.append(list(var))
-                variance_na_mean.append(np.mean(var))
-                # variance_na_ci.append(ci.getCI(var))
-    # p.append(ax.plot(p_g, variance_mean))
-    # p.append(ax.plot(p_g, variance_na_mean))
+                variance_na_mean.append(np.mean(var))                
+
 
     difference = []
-    difference_ci = []
     for i in range(len(variance_mean)):
         difference.append((variance_na_mean[i] - variance_mean[i])/variance_na_mean[i])
-        # difference_ci.append((variance_na_ci[i] - variance_ci[i])/variance_na_ci[i])
     
-
-    #p.append(ax.errorbar(p_g, difference, yerr=difference_ci))
     p.append(ax.plot(p_g, difference, '.-'))
 
     f.close()
@@ -101,21 +87,9 @@ for i_s in n_s:
 
 # --- plotting --- #
 
-# p0 = ax.boxplot(variance_box)
-# p1 = ax.boxplot(variance_na_box)
-# p1 = ax.boxplot(variance_2_box)
-# ax.set_xticklabels([str(x) for x in n_s])
-# p0 = ax.errorbar(n_s, variance_mean, yerr=variance_ci, fmt='-o')# , 'bs-')
-
-# p1 = ax.errorbar(n_s, variance_na_mean, yerr=variance_na_ci, fmt='-^')# , 'g^-')
-
-
 ax.set_xlabel('State change probability ' + r'$\mathsf{P}[M=M_2]$')
 ax.set_ylabel('Adaptation Gain')
 
-# ax.set_yscale('log')#, nonposy="clip")
-
-# ax.set_xlim((35, 105)
 ax.set_ylim((0, 1))
 
 ax.grid(True)

@@ -66,7 +66,7 @@ for i_s in n_s:
         results_ci[n_s.index(i_s)].append(ci.getCI(var))
 
 f.close()
-remove_simdata()
+# remove_simdata()
 
 # --- plotting --- #
 

@@ -21,17 +21,17 @@ from preprocessing import compile_results, remove_simdata
 
 
 # --- throughput --- #
-compile_results('fig5_throughput', 'Throughput')
+compile_results('fig5_throughput', 'Throughput', 'Fig5')
 f = open("../export/fig5_throughput_data")
 lines = f.read().split(' ')
 
 # --- accesses --- #
-compile_results('fig5_access', 'Access')
+compile_results('fig5_access', 'Access', 'Fig5')
 f1 = open("../export/fig5_access_data")
 lines1 = f1.read().split(' ')
 
 # --- collisions --- #
-compile_results('fig5_collisions', 'Collisions')
+compile_results('fig5_collisions', 'Collisions', 'Fig5')
 f2 = open("../export/fig5_collisions_data")
 lines2 = f2.read().split(' ')
 

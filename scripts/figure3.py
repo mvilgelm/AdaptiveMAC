@@ -57,7 +57,8 @@ for i_s in n_s:
 # --- cleanup --- #
 f.close()
 os.system('rm ../export/fig3_data')
-remove_simdata()
+
+# remove_simdata()
 
 # --- plotting --- #
 
