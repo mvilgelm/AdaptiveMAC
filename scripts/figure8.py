@@ -31,7 +31,7 @@ variance_nab_ci = []
 variance_nab_box = []
 
 n_s = [4, 10, 14]
-n_rep = 30
+n_rep = 100
 
 p_g = [0.1+float(x)/10 for x in range(10)]
 
