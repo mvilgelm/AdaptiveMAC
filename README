@@ -1,10 +1,10 @@
 This is a software simulation project aiming at generating numerical data to support the research findings on Adaptive MAC protocol for Networked Control Systems
 
 Contact:
-Mikhail Vilgelm 
+Mikhail Vilgelm
 mikhail.vilgelm@tum.de
 
-Software copyright (c): 
+Software copyright (c):
 Chair of Communication Networks, http://www.lkn.ei.tum.de
 Chair of Information-oriented Control, http://www.itr.ei.tum.de
 Technical University of Munich
@@ -16,5 +16,6 @@ Note: this project is also a part of the Repeatability Evaluation submission for
 Paper title: Adaptive Decentralized MAC for Event-Triggered Networked Control Systems
 Authors: M.Vilgelm, M.H.Mamduhi, W.Kellerer, S.Hirche
 Paper is available: http://www.lkn.ei.tum.de/publikationen/2016.html
+Guidelines for repeating the results: guidelines.pdf
 
 
