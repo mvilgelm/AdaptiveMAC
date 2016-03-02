@@ -31,24 +31,11 @@ Server::~Server() {
 void Server::initialize(){
     EV << "Server::initialize() entering function" << endl;
 
-    //statistic
-    successCount = 0;
-    periodCount = 0;
-    accessCount = 0;
-    collisionCount = 0;
-
-    //probability of good channel
-    pG = (double)par("pG");
-    adaptationExperiment = (bool)par("adaptationExperiment");
-
-    checkQTimer = new cMessage("checkQTimer");
-
-    //parameters
-    controlPeriod = (double)par("controlPeriod");
-    M = (int)par("M");
+    resetStatistic();
+    setParameters();
 
     incomings = new cQueue();
-
+    checkQTimer = new cMessage("checkQTimer");
     //initial offset for the control period: not to intercept with the incomings
     scheduleAt(simTime()+controlPeriod+controlPeriod/4, checkQTimer);
 }
@@ -149,5 +136,23 @@ void Server::finish(){
 
 int Server::getM(){
     return M;
+}
+
+void Server::setParameters(){
+    //probability of good channel
+    pG = (double)par("pG");
+    adaptationExperiment = (bool)par("adaptationExperiment");
+
+    //parameters
+    controlPeriod = (double)par("controlPeriod");
+    M = (int)par("M");
+}
+
+void Server::resetStatistic(){
+    successCount = 0;
+    periodCount = 0;
+    accessCount = 0;
+    collisionCount = 0;
+
 }
 

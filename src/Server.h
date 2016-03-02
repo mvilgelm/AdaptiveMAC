@@ -43,7 +43,9 @@ protected:
     /**
      * Process the queue with incoming transmissions
      */
-    void processQ();
+    virtual void processQ();
+    virtual void setParameters();
+    virtual void resetStatistic();
 
 public:
     /**

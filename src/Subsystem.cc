@@ -60,25 +60,14 @@ void Subsystem::handleMessage(cMessage *msg){
     EV << "Subsystem::handleMessage() entering function." << endl;
 
     if (msg == controlTimer){
-        if (adaptationExperiment){
-            Server *srv = check_and_cast<Server*> (server);
-            M = srv->getM();
-        }
-
-        loop->updateError();
-
-        if (ev.isGUI())
-            updateDisplay();
-
-        if (decideOnTx()){
-            transmit();
-        }
+        processControlTimer();
         scheduleAt(simTime()+loop->controlPeriod, controlTimer);
     }
+    else if (msg->isSelfMessage()){
+        processSelfMessage(msg);
+    }
     else {
-
         processFeedback(msg);
-
     }
 }
 
@@ -142,7 +131,7 @@ void Subsystem::finish(){
 
 void Subsystem::updateDisplay(){
     char buf[30];
-    sprintf(buf, "err: %.4f", loop->error);
+    sprintf(buf, "err: %.4F", loop->error);
     getDisplayString().setTagArg("t",0,buf);
     getParentModule()->getDisplayString().setTagArg("t",0,buf);
 }
@@ -213,6 +202,26 @@ void Subsystem::collisionEvent(){
 void Subsystem::successEvent(){
     loop->theta=1;
     EV << "false" << endl;
+}
+
+void Subsystem::processControlTimer(){
+    if (adaptationExperiment){
+        Server *srv = check_and_cast<Server*> (server);
+        M = srv->getM();
+    }
+
+    loop->updateError();
+
+    if (ev.isGUI())
+        updateDisplay();
+
+    if (decideOnTx()){
+        transmit();
+    }
+}
+
+void Subsystem::processSelfMessage(cMessage * msg){
+    //nothing expected here
 }
 
 

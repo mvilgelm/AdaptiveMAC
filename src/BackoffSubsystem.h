@@ -22,6 +22,21 @@ class BackoffSubsystem: public Subsystem {
 public:
     BackoffSubsystem();
     virtual ~BackoffSubsystem();
+
+protected:
+
+    cMessage * backOffTimer;
+
+    virtual void collisionEvent();
+    virtual void processSelfMessage(cMessage * msg);
+
+    simtime_t getBackOffTime();
+
+    /**
+     * Attempt a transmission
+     */
+    virtual void transmit();
+
 };
 
 #endif /* BACKOFFSUBSYSTEM_H_ */

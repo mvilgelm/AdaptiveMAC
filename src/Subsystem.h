@@ -31,7 +31,7 @@ public:
     Subsystem();
     virtual ~Subsystem();
 
-private:
+protected:
     /*
      * timer for error updates
      */
@@ -77,9 +77,10 @@ private:
     /**
      * Attempt a transmission
      */
-    void transmit();
+    virtual void transmit();
 
-
+    virtual void processControlTimer();
+    virtual void processSelfMessage(cMessage * msg);
     virtual void processFeedback(cMessage * msg);
     virtual void collisionEvent();
     virtual void successEvent();

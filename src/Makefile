@@ -28,7 +28,13 @@ PROJECTRELATIVE_PATH = src
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc and .msg files
-OBJS = $O/BackoffSubsystem.o $O/Server.o $O/ControlLoop.o $O/Subsystem.o $O/ErrorPkt_m.o
+OBJS = \
+    $O/BackoffSubsystem.o \
+    $O/Server.o \
+    $O/ControlLoop.o \
+    $O/Subsystem.o \
+    $O/WLANServer.o \
+    $O/ErrorPkt_m.o
 
 # Message files
 MSGFILES = \
@@ -119,6 +125,7 @@ depend:
 $O/BackoffSubsystem.o: BackoffSubsystem.cc \
 	BackoffSubsystem.h \
 	ControlLoop.h \
+	ErrorPkt_m.h \
 	Subsystem.h
 $O/ControlLoop.o: ControlLoop.cc \
 	ControlLoop.h
@@ -132,4 +139,7 @@ $O/Subsystem.o: Subsystem.cc \
 	ErrorPkt_m.h \
 	Server.h \
 	Subsystem.h
+$O/WLANServer.o: WLANServer.cc \
+	ErrorPkt_m.h \
+	WLANServer.h
 
