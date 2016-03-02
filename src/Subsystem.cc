@@ -27,27 +27,33 @@ Subsystem::~Subsystem() {
 void Subsystem::initialize(){
     EV << "Subsystem::initialize() entering function." << endl;
     id = getId();
-    error = 0;
-    varW = (double)par("varW");
-    sysA = (double)par("sysA");
-    Lambda = (double)par("Lambda");
+
+    loop = new ControlLoop();
+
+    loop->error = 0;
+    loop->varW = (double)par("varW");
+    loop->sysA = (double)par("sysA");
+    loop->Lambda = (double)par("Lambda");
+    loop->controlPeriod = (double)par("controlPeriod");
+
+    loop->theta = 0;
+    loop->periodCount=0;
+    loop->errMean = 0;
+    loop->errVar = 0;
+
+
     M = (int)par("M");
     N = (int)par("N");
-    controlPeriod = (double)par("controlPeriod");
+
 
     adaptLambda = (bool)par("adaptLambda");
     adaptationExperiment = (bool)par("adaptationExperiment");
     defaultM = (int)par("defaultM");
 
-    theta = 0;
-    periodCount=0;
-    errMean = 0;
-    errVar = 0;
-
     server = simulation.getModuleByPath("server");
     //if (!server) error("server not found");
     controlTimer = new cMessage("controlTimer");
-    scheduleAt(simTime()+controlPeriod, controlTimer);
+    scheduleAt(simTime()+loop->controlPeriod, controlTimer);
 }
 
 void Subsystem::handleMessage(cMessage *msg){
@@ -59,41 +65,21 @@ void Subsystem::handleMessage(cMessage *msg){
             M = srv->getM();
         }
 
-        updateError();
+        loop->updateError();
+
+        if (ev.isGUI())
+            updateDisplay();
+
         if (decideOnTx()){
             transmit();
         }
-        scheduleAt(simTime()+controlPeriod, controlTimer);
+        scheduleAt(simTime()+loop->controlPeriod, controlTimer);
     }
     else {
-        ErrorPkt *pkt = check_and_cast<ErrorPkt*> (msg);
-        bool collision = pkt->getCollision();
-        EV << "Subsystem::handleMessage() collision: ";
 
-        if (collision){
-            theta=0;
-            EV << "true" << endl;
-        }
-        else {
-            theta=1;
-            EV << "false" << endl;
-        }
-        delete pkt;
+        processFeedback(msg);
+
     }
-}
-
-void Subsystem::updateError(){
-    EV << "Subsystem::updateError() entering function." << endl;
-
-    error = (1-theta)*sysA*error + normal(0, sqrt(varW));
-    EV << "Err: " << error << endl;
-
-    if (ev.isGUI())
-        updateDisplay();
-
-    theta = 0;
-
-    updateErrVar();
 }
 
 bool Subsystem::decideOnTx(){
@@ -102,7 +88,7 @@ bool Subsystem::decideOnTx(){
 
     if (!adaptationExperiment) {
 
-        if (fabs(error)>Lambda){
+        if (fabs(loop->error)>loop->Lambda){
             //EV << "Subsystem::decideOnTx() decision: true" << endl;
             return true;
         }
@@ -113,7 +99,7 @@ bool Subsystem::decideOnTx(){
     }
     else {
         if (adaptLambda) {
-            if (fabs(error)>lambdaLookupTable(M,N)){
+            if (fabs(loop->error)>lambdaLookupTable(M,N)){
                 //EV << "Subsystem::decideOnTx() decision: true" << endl;
                 return true;
             }
@@ -123,7 +109,7 @@ bool Subsystem::decideOnTx(){
             }
         }
         else {
-            if (fabs(error)>lambdaLookupTable(defaultM,N)){
+            if (fabs(loop->error)>lambdaLookupTable(defaultM,N)){
                 //EV << "Subsystem::decideOnTx() decision: true" << endl;
                 return true;
             }
@@ -143,30 +129,20 @@ void Subsystem::transmit(){
     ErrorPkt *pkt = new ErrorPkt();
     pkt->setId(id);
     pkt->setChannel(channel);
-    pkt->setError(error);
+    pkt->setError(loop->error);
 
     EV << "Subsystem::transmit() channel choice: " << channel << endl;
 
     sendDirect(pkt, server->gate("in"));
 }
 
-void Subsystem::updateErrVar(){
-    //online variance calculation algorithm
-    //storing all the values becomes a burden on the filesystem...
-
-    periodCount++;
-    double delta = error - errMean;
-    errMean += delta/((double)periodCount);
-    errVar += delta*(error-errMean);
-}
-
 void Subsystem::finish(){
-    recordScalar("errVar", errVar/((double)periodCount-1));
+    recordScalar("errVar", loop->errVar/((double)loop->periodCount-1));
 }
 
 void Subsystem::updateDisplay(){
     char buf[30];
-    sprintf(buf, "err: %.4f", error);
+    sprintf(buf, "err: %.4f", loop->error);
     getDisplayString().setTagArg("t",0,buf);
     getParentModule()->getDisplayString().setTagArg("t",0,buf);
 }
@@ -212,3 +188,31 @@ double Subsystem::lambdaLookupTable(int m, int n){
     }
     EV << "didn't find any matching value" << endl;
 }
+
+void Subsystem::processFeedback(cMessage * msg){
+
+    ErrorPkt *pkt = check_and_cast<ErrorPkt*> (msg);
+    bool collision = pkt->getCollision();
+    EV << "Subsystem::handleMessage() collision: ";
+
+    if (collision){
+        collisionEvent();
+    }
+    else {
+        successEvent();
+    }
+    delete pkt;
+
+}
+
+void Subsystem::collisionEvent(){
+    loop->theta=0;
+    EV << "true" << endl;
+}
+
+void Subsystem::successEvent(){
+    loop->theta=1;
+    EV << "false" << endl;
+}
+
+

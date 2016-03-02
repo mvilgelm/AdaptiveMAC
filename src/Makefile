@@ -28,7 +28,7 @@ PROJECTRELATIVE_PATH = src
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc and .msg files
-OBJS = $O/Server.o $O/Subsystem.o $O/ErrorPkt_m.o
+OBJS = $O/BackoffSubsystem.o $O/Server.o $O/ControlLoop.o $O/Subsystem.o $O/ErrorPkt_m.o
 
 # Message files
 MSGFILES = \
@@ -116,12 +116,19 @@ depend:
 	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc results/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
+$O/BackoffSubsystem.o: BackoffSubsystem.cc \
+	BackoffSubsystem.h \
+	ControlLoop.h \
+	Subsystem.h
+$O/ControlLoop.o: ControlLoop.cc \
+	ControlLoop.h
 $O/ErrorPkt_m.o: ErrorPkt_m.cc \
 	ErrorPkt_m.h
 $O/Server.o: Server.cc \
 	ErrorPkt_m.h \
 	Server.h
 $O/Subsystem.o: Subsystem.cc \
+	ControlLoop.h \
 	ErrorPkt_m.h \
 	Server.h \
 	Subsystem.h

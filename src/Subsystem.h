@@ -14,6 +14,7 @@ Copyright (c) Chair of Communication Networks, Technical University of Munich
 
 #include <csimplemodule.h>
 #include <omnetpp.h>
+#include "ControlLoop.h"
 
 class Subsystem: public cSimpleModule {
 
@@ -44,13 +45,12 @@ private:
     /*
      * parameters
      */
-    double sysA; //A_i
-    double varW; //noise variance w_i
-    double Lambda; //transmission threshold - if static
+
+    ControlLoop * loop;
+
+    int id; //own id in the simulation
     int M; //number of channels - changing if (adaptationExperiment)
     int N; //number of subsystems
-    int id; //own id in the simulation
-    double controlPeriod;
 
     /**
      * Indicates whether the use a static or adaptive scheduler
@@ -70,11 +70,6 @@ private:
     int defaultM;
 
     /**
-     * Update the error status based on dynamics
-     */
-    void updateError();
-
-    /**
      * Check whether transmission is to be attempted
      */
     bool decideOnTx();
@@ -84,23 +79,10 @@ private:
      */
     void transmit();
 
-    /*
-     * error state
-     */
-    long double error;
-    int theta; //was transmission successful or not?
 
-    /**
-     * Online error variance calculation
-     */
-    void updateErrVar();
-
-    /*
-     * For mean and error variance tracking
-     */
-    double errVar;
-    int periodCount;
-    double errMean;
+    virtual void processFeedback(cMessage * msg);
+    virtual void collisionEvent();
+    virtual void successEvent();
 
     /**
      * Just the lookup table for the adaptation experiment. Values are same as in Table 2 from the paper.
