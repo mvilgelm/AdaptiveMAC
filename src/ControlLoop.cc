@@ -7,6 +7,7 @@
 
 #include <ControlLoop.h>
 
+
 ControlLoop::ControlLoop(){
 
 }
@@ -22,10 +23,10 @@ void ControlLoop::updateErrVar(){
     errVar += delta*(error-errMean);
 }
 
-void ControlLoop::updateError(){
+void ControlLoop::updateError(cComponent * callback){
     EV << "Subsystem::updateError() entering function." << endl;
 
-    error = (1-theta)*sysA*error + normal(0, sqrt(varW));
+    error = (1-theta)*sysA*error + callback->normal(0, sqrt(varW));
     EV << "Err: " << error << endl;
 
     theta = 0;

@@ -10,6 +10,8 @@
 
 #include <omnetpp.h>
 
+using namespace omnetpp;
+
 class ControlLoop {
 public:
     ControlLoop();
@@ -35,7 +37,7 @@ public:
     /**
      * Update the error status based on dynamics
      */
-    void updateError();
+    void updateError(cComponent * callback);
 
     /**
      * Online error variance calculation

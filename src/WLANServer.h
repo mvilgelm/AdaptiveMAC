@@ -16,9 +16,9 @@
 #ifndef WLANSERVER_H_
 #define WLANSERVER_H_
 
-#include <csimplemodule.h>
 #include <omnetpp.h>
 
+using namespace omnetpp;
 
 /**
  * Aloha server; see NED file for more info.
@@ -38,7 +38,7 @@ class WLANServer : public cSimpleModule {
     long currentCollisionNumFrames;
     long receiveCounter;
 
-    simtime_t recvStartTime;
+    simtime_t _recvStartTime;
     enum {IDLE=0, TRANSMISSION=1, COLLISION=2};
     simsignal_t channelStateSignal;
 
@@ -47,14 +47,13 @@ class WLANServer : public cSimpleModule {
     void sendAck();
 
     // statistics
-    simsignal_t receiveBeginSignal;
-    simsignal_t receiveSignal;
-    simsignal_t collisionLengthSignal;
-    simsignal_t collisionSignal;
+    simsignal_t _receiveBeginSignal;
+    simsignal_t _receiveSignal;
+    simsignal_t _collisionLengthSignal;
+    simsignal_t _collisionSignal;
 
-    simtime_t radioDelay;
-    double txRate;
-    cPar *ackLenBits;
+    double TX_RATE;
+    int ackLenBits;
 
 
   public:

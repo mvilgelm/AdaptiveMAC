@@ -13,45 +13,41 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#ifndef BACKOFFSUBSYSTEM_H_
-#define BACKOFFSUBSYSTEM_H_
+#ifndef BASECLIENT_H_
+#define BASECLIENT_H_
 
-#include <Subsystem.h>
 
-class BackoffSubsystem: public Subsystem {
+#include "Subsystem.h"
+
+class BaseClient: public Subsystem {
 public:
-    BackoffSubsystem();
-    virtual ~BackoffSubsystem();
+    BaseClient();
+    virtual ~BaseClient();
 
 protected:
-    virtual void initialize();
-
     /**
-     * Back-off parameters
+     * Standard functions
      */
-    cMessage * _backOffTimer;
-    double SLOT_LENGTH;
-    int MIN_EXPONENT;
-    int MAX_EXPONENT;
-
-    cMessage * _waitForAckTimer;
-
-    // current exponent
-    int _boExponent;
+    virtual void initialize();
+    virtual void handleMessage(cMessage *msg);
 
 
-    virtual void collisionEvent();
-    virtual void successEvent();
-    virtual void processSelfMessage(cMessage * msg);
-    virtual void processControlTimer();
-
-    simtime_t getBackOffTime();
-
+protected:
     /**
      * Attempt a transmission
      */
-    virtual void transmit();
+    //virtual void transmit();
 
+    virtual void processControlTimer();
+    virtual void processSelfMessage(cMessage * msg);
+    //virtual void processFeedback(cMessage * msg);
+    //virtual void collisionEvent();
+    //virtual void successEvent();
+
+    /**
+     * to enable custom arrivals
+     */
+    virtual double getNextArrivalTime();
 };
 
-#endif /* BACKOFFSUBSYSTEM_H_ */
+#endif /* BASECLIENT_H_ */

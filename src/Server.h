@@ -12,8 +12,10 @@ Copyright (c) Chair of Communication Networks, Technical University of Munich
 #ifndef SERVER_H_
 #define SERVER_H_
 
-#include <csimplemodule.h>
+//#include <csimplemodule.h>
 #include <omnetpp.h>
+
+using namespace omnetpp;
 
 class Server: public cSimpleModule {
 

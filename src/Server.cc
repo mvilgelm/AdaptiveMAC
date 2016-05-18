@@ -106,7 +106,7 @@ void Server::processQ(){
         int chnl = pkt->getChannel();
         it = collisions->find(chnl);
 
-        cModule* subSys = simulation.getModule(pkt->getId());
+        cModule* subSys = getSimulation()->getModule(pkt->getId());
 
         if ( it == collisions->end()) {
             //no collision, send positive feedback

@@ -41,3 +41,4 @@ ui/com.simulte.configeditor/bin/
 /simulations/*/*/*/results*/
 *.mat
 *.pyc
+*/.cmdenv-log

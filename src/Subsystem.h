@@ -12,9 +12,12 @@ Copyright (c) Chair of Communication Networks, Technical University of Munich
 #ifndef SUBSYSTEM_H_
 #define SUBSYSTEM_H_
 
-#include <csimplemodule.h>
+
+//#include <csimplemodule.h>
 #include <omnetpp.h>
 #include "ControlLoop.h"
+
+using namespace omnetpp;
 
 class Subsystem: public cSimpleModule {
 
@@ -80,7 +83,7 @@ protected:
     virtual void transmit();
 
     virtual void processControlTimer();
-    virtual void processSelfMessage(cMessage * msg);
+    virtual void processSelfMessage(cMessage * msg) {};
     virtual void processFeedback(cMessage * msg);
     virtual void collisionEvent();
     virtual void successEvent();

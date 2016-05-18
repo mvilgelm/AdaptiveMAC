@@ -50,7 +50,7 @@ void Subsystem::initialize(){
     adaptationExperiment = (bool)par("adaptationExperiment");
     defaultM = (int)par("defaultM");
 
-    server = simulation.getModuleByPath("server");
+    server = getSimulation()->getModuleByPath("server");
     //if (!server) error("server not found");
     controlTimer = new cMessage("controlTimer");
     scheduleAt(simTime()+loop->controlPeriod, controlTimer);
@@ -131,7 +131,7 @@ void Subsystem::finish(){
 
 void Subsystem::updateDisplay(){
     char buf[30];
-    sprintf(buf, "err: %.4F", loop->error);
+    sprintf(buf, "err: %.4F", (double) loop->error);
     getDisplayString().setTagArg("t",0,buf);
     getParentModule()->getDisplayString().setTagArg("t",0,buf);
 }
@@ -210,9 +210,9 @@ void Subsystem::processControlTimer(){
         M = srv->getM();
     }
 
-    loop->updateError();
+    loop->updateError(this);
 
-    if (ev.isGUI())
+    if (getEnvir()->isGUI())
         updateDisplay();
 
     if (decideOnTx()){
@@ -220,8 +220,5 @@ void Subsystem::processControlTimer(){
     }
 }
 
-void Subsystem::processSelfMessage(cMessage * msg){
-    //nothing expected here
-}
 
 
