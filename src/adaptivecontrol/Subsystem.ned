@@ -7,7 +7,7 @@
 // 
 // Copyright (c) Chair of Communication Networks, Technical University of Munich
 
-package adaptivethreshold;
+package contentionaccess.adaptivecontrol;
 
 //
 // Represents a sub-system

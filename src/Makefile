@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for AdaptiveThreshold
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep -I..
+#  opp_makemake -f --deep
 #
 
 # Name of target to be created (-o option)
@@ -15,7 +15,15 @@ USERIF_LIBS = $(ALL_ENV_LIBS) # that is, $(TKENV_LIBS) $(QTENV_LIBS) $(CMDENV_LI
 #USERIF_LIBS = $(QTENV_LIBS)
 
 # C++ include paths (with -I)
-INCLUDE_PATH = -I.. -I. -Iresults
+INCLUDE_PATH = \
+    -I. \
+    -Iadaptivecontrol \
+    -Ibackoff \
+    -Icontrolapp \
+    -Imessages \
+    -Inetworks \
+    -Irach \
+    -Iresults
 
 # Additional object and library files to link with
 EXTRA_OBJS =
@@ -30,17 +38,17 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc, .msg and .sm files
 OBJS = \
-    $O/BackoffSubsystem.o \
-    $O/Subsystem.o \
-    $O/ControlLoop.o \
-    $O/Server.o \
-    $O/WLANServer.o \
-    $O/BaseClient.o \
-    $O/ErrorPkt_m.o
+    $O/adaptivecontrol/Subsystem.o \
+    $O/adaptivecontrol/Server.o \
+    $O/backoff/BackoffSubsystem.o \
+    $O/backoff/WLANServer.o \
+    $O/controlapp/ControlLoop.o \
+    $O/rach/BaseClient.o \
+    $O/messages/ErrorPkt_m.o
 
 # Message files
 MSGFILES = \
-    ErrorPkt.msg
+    messages/ErrorPkt.msg
 
 # SM files
 SMFILES =
@@ -124,6 +132,12 @@ clean:
 	$(Q)-rm -rf $O
 	$(Q)-rm -f AdaptiveThreshold AdaptiveThreshold.exe libAdaptiveThreshold.so libAdaptiveThreshold.a libAdaptiveThreshold.dll libAdaptiveThreshold.dylib
 	$(Q)-rm -f ./*_m.cc ./*_m.h ./*_sm.cc ./*_sm.h
+	$(Q)-rm -f adaptivecontrol/*_m.cc adaptivecontrol/*_m.h adaptivecontrol/*_sm.cc adaptivecontrol/*_sm.h
+	$(Q)-rm -f backoff/*_m.cc backoff/*_m.h backoff/*_sm.cc backoff/*_sm.h
+	$(Q)-rm -f controlapp/*_m.cc controlapp/*_m.h controlapp/*_sm.cc controlapp/*_sm.h
+	$(Q)-rm -f messages/*_m.cc messages/*_m.h messages/*_sm.cc messages/*_sm.h
+	$(Q)-rm -f networks/*_m.cc networks/*_m.h networks/*_sm.cc networks/*_sm.h
+	$(Q)-rm -f rach/*_m.cc rach/*_m.h rach/*_sm.cc rach/*_sm.h
 	$(Q)-rm -f results/*_m.cc results/*_m.h results/*_sm.cc results/*_sm.h
 
 cleanall: clean
@@ -131,32 +145,32 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES) $(SM_CC_FILES)  ./*.cc results/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES) $(SM_CC_FILES)  ./*.cc adaptivecontrol/*.cc backoff/*.cc controlapp/*.cc messages/*.cc networks/*.cc rach/*.cc results/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
-$O/BackoffSubsystem.o: BackoffSubsystem.cc \
-	BackoffSubsystem.h \
-	ControlLoop.h \
-	ErrorPkt_m.h \
-	Subsystem.h
-$O/BaseClient.o: BaseClient.cc \
-	BaseClient.h \
-	ControlLoop.h \
-	Server.h \
-	Subsystem.h
-$O/ControlLoop.o: ControlLoop.cc \
-	ControlLoop.h
-$O/ErrorPkt_m.o: ErrorPkt_m.cc \
-	ErrorPkt_m.h
-$O/Server.o: Server.cc \
-	ErrorPkt_m.h \
-	Server.h
-$O/Subsystem.o: Subsystem.cc \
-	ControlLoop.h \
-	ErrorPkt_m.h \
-	Server.h \
-	Subsystem.h
-$O/WLANServer.o: WLANServer.cc \
-	ErrorPkt_m.h \
-	WLANServer.h
+$O/adaptivecontrol/Server.o: adaptivecontrol/Server.cc \
+	adaptivecontrol/Server.h \
+	messages/ErrorPkt_m.h
+$O/adaptivecontrol/Subsystem.o: adaptivecontrol/Subsystem.cc \
+	adaptivecontrol/Server.h \
+	adaptivecontrol/Subsystem.h \
+	controlapp/ControlLoop.h \
+	messages/ErrorPkt_m.h
+$O/backoff/BackoffSubsystem.o: backoff/BackoffSubsystem.cc \
+	adaptivecontrol/Subsystem.h \
+	backoff/BackoffSubsystem.h \
+	controlapp/ControlLoop.h \
+	messages/ErrorPkt_m.h
+$O/backoff/WLANServer.o: backoff/WLANServer.cc \
+	backoff/WLANServer.h \
+	messages/ErrorPkt_m.h
+$O/controlapp/ControlLoop.o: controlapp/ControlLoop.cc \
+	controlapp/ControlLoop.h
+$O/messages/ErrorPkt_m.o: messages/ErrorPkt_m.cc \
+	messages/ErrorPkt_m.h
+$O/rach/BaseClient.o: rach/BaseClient.cc \
+	adaptivecontrol/Server.h \
+	adaptivecontrol/Subsystem.h \
+	controlapp/ControlLoop.h \
+	rach/BaseClient.h
 

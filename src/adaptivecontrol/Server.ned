@@ -8,7 +8,7 @@
 // Copyright (c) Chair of Communication Networks, Technical University of Munich
 
 
-package adaptivethreshold;
+package contentionaccess.adaptivecontrol;
 
 //
 // Server represent a controller entity (in an emulative fashion)

@@ -13,16 +13,24 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package adaptivethreshold;
+package contentionaccess.backoff;
 
 
-simple WLANServer {
+simple BackoffSubsystem {
     parameters:
-        double controlPeriod @unit(s);
-        bool adaptationExperiment = default(false);
-        double pG = default(0.0);
-        int M;
+        double slotLength @unit(s);
+        
+        // from subsystem
+    	double sysA;
+    	double varW;
+    	double controlPeriod @unit(s);
+    	int M;
+    	int N;
+    	double Lambda;
+    	bool adaptLambda = default(false);
+    	int defaultM = default(5);
+    	bool adaptationExperiment = default(false);
     gates:
         input in @directIn;
-        //output out;
+        //output out;    
 }

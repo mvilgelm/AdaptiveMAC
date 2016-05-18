@@ -7,7 +7,10 @@
 // 
 // Copyright (c) Chair of Communication Networks, Technical University of Munich
 
-package adaptivethreshold;
+package contentionaccess.networks;
+
+import contentionaccess.adaptivecontrol.Subsystem;
+import contentionaccess.adaptivecontrol.Server;
 
 //
 // Networked Control System closed over the multi-channel slotted ALOHA network

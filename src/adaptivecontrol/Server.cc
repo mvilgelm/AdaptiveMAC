@@ -9,7 +9,7 @@ mikhail.vilgelm@tum.de
 Copyright (c) Chair of Communication Networks, Technical University of Munich
 */
 
-#include <src/Server.h>
+#include "Server.h"
 #include <vector>
 
 Define_Module(Server);

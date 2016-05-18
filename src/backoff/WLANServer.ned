@@ -11,29 +11,18 @@
 // 
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
-//
+// 
+
+package contentionaccess.backoff;
 
 
-package adaptivethreshold;
-
-//
-// Networked Control System closed over the multi-channel slotted ALOHA network
-//
-network BackoffAloha
-{
+simple WLANServer {
     parameters:
-        int N; 
-        int M;
         double controlPeriod @unit(s);
-    submodules:
-        subSys[N]: BackoffSubsystem{
-            controlPeriod = controlPeriod;
-            M=M;
-        }
-        server: WLANServer {
-            controlPeriod = controlPeriod;
-            M=M;            
-        }
-    connections allowunconnected:
-	//wireless
+        bool adaptationExperiment = default(false);
+        double pG = default(0.0);
+        int M;
+    gates:
+        input in @directIn;
+        //output out;
 }
