@@ -35,3 +35,4 @@ if __name__=='__main__':
     
     plt.figure()    
     plt.errorbar([x for x in range(100)], data, ci)
+    plt.show()

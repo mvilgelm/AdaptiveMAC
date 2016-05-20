@@ -39,9 +39,10 @@ void BackoffSubsystem::initialize(){
     Subsystem::initialize();
     SLOT_LENGTH = (double) par("slotLength");
 
-    // TODO make them parameters
-    MIN_EXPONENT = 2;
-    MAX_EXPONENT = 8;
+    MIN_EXPONENT = (int) par("minExponent");
+    MAX_EXPONENT = (int) par("maxExponent");
+
+    _errorDependentExponent = (bool) par("errorDependentExponent");
 
     _boExponent = MIN_EXPONENT;
 }
@@ -83,12 +84,30 @@ void BackoffSubsystem::successEvent(){
 }
 
 simtime_t BackoffSubsystem::getBackOffTime(){
-    simtime_t t = this->intuniform(1, pow(2, _boExponent)) * SLOT_LENGTH;
+    if (!_errorDependentExponent) {
+        // regular exponent
+        simtime_t t = this->intuniform(1, pow(2, _boExponent)) * SLOT_LENGTH;
 
-    if (_boExponent < MAX_EXPONENT)
-        _boExponent++;
+        if (_boExponent < MAX_EXPONENT)
+            _boExponent++;
 
-    return t;
+        return t;
+    }
+    else {
+        // error dependent exponent
+        double error = this->loop->error;
+
+        int errorCls = MAX_EXPONENT - floor((log(error)/log(2)));
+
+        if (errorCls < 0)
+            errorCls = 0;
+
+        _boExponent = MIN_EXPONENT + errorCls;
+
+        simtime_t t = this->intuniform(1, pow(2, _boExponent)) * SLOT_LENGTH;
+
+        return t;
+    }
 }
 
 void BackoffSubsystem::processControlTimer(){
@@ -114,12 +133,11 @@ void BackoffSubsystem::transmit(){
     pkt->setChannel(channel);
     pkt->setError(loop->error);
 
-    //TODO duration should be a parameter
-    pkt->setDuration(0.009);
+    pkt->setDuration((double) par("pktDuration") * SLOT_LENGTH);
 
     EV << "Subsystem::transmit() error: "<< loop->error << ", channel choice: " << channel << endl;
 
-    scheduleAt(simTime()+0.01 + 0.000000001, _waitForAckTimer); // TODO timing
+    scheduleAt(simTime()+ ((double) par("pktDuration") + (double) par("ackDuration")) * SLOT_LENGTH + 0.000000001, _waitForAckTimer); // TODO timing
 
     sendDirect(pkt, 0.0, pkt->getDuration(), server->gate("in"));
 }

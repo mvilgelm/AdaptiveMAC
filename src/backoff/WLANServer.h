@@ -52,9 +52,7 @@ class WLANServer : public cSimpleModule {
     simsignal_t _collisionLengthSignal;
     simsignal_t _collisionSignal;
 
-    double TX_RATE;
-    int ackLenBits;
-
+    double SLOT_LENGTH;
 
   public:
     WLANServer();

@@ -19,6 +19,13 @@ package contentionaccess.backoff;
 simple BackoffSubsystem {
     parameters:
         double slotLength @unit(s);
+        double pktDuration;  // in slots
+        double ackDuration;  // in slots
+        
+        int minExponent;
+        int maxExponent;
+        
+        bool errorDependentExponent = default(false);
         
         // from subsystem
     	double sysA;

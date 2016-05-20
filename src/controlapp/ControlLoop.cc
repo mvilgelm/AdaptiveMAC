@@ -7,6 +7,8 @@
 
 #include <ControlLoop.h>
 
+//#include <>
+
 
 ControlLoop::ControlLoop(){
 
@@ -25,8 +27,16 @@ void ControlLoop::updateErrVar(){
 
 void ControlLoop::updateError(cComponent * callback){
     EV << "Subsystem::updateError() entering function." << endl;
+    try {
+        error = (1-theta)*sysA*error + callback->normal(0, sqrt(varW));
+    }
+    catch (...) {
+        throw cRuntimeError("Cannot perform the error update, overflow probable");
+    }
 
-    error = (1-theta)*sysA*error + callback->normal(0, sqrt(varW));
+    if ((error > 10000000) || (error < -10000000))
+        throw cRuntimeError("Overflow probable: error is too large");
+
     EV << "Err: " << error << endl;
 
     theta = 0;

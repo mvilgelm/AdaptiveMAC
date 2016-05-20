@@ -21,6 +21,10 @@ simple WLANServer {
         double controlPeriod @unit(s);
         bool adaptationExperiment = default(false);
         double pG = default(0.0);
+        
+        double slotLength @unit(s);
+        double ackDuration;  // in slots
+        
         int M;
     gates:
         input in @directIn;

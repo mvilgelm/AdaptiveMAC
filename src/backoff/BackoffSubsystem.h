@@ -30,9 +30,12 @@ protected:
      * Back-off parameters
      */
     cMessage * _backOffTimer;
+
     double SLOT_LENGTH;
     int MIN_EXPONENT;
     int MAX_EXPONENT;
+
+    bool _errorDependentExponent;
 
     cMessage * _waitForAckTimer;
 

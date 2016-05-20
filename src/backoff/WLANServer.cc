@@ -169,11 +169,11 @@ void WLANServer::sendAck()
     //create ack packet
     ErrorPkt *ack = new ErrorPkt(pk->getName());
     ack->setId(pk->getId());
-    ack->setBitLength(ackLenBits);
+    //ack->setBitLength(ackLenBits);
 
     //send direct ack
     cModule *sender = cSimulation::getActiveSimulation()->getModule(pk->getId());
-    simtime_t duration = ack->getBitLength() / TX_RATE;
+    simtime_t duration = (double) par("ackDuration") * SLOT_LENGTH;
     sendDirect(ack, 0.0, duration, sender->gate("in"));
 
 //    // start of sending: now
@@ -185,12 +185,7 @@ void WLANServer::sendAck()
 }
 
 void WLANServer::setSimParameters(){
-
-    // TODO uncomment and implement as parameters
-    // TX_RATE = par("txRate");
-    // ackLenBits = &par("ackLenBits");
-    TX_RATE = 80000; // bps
-    ackLenBits = 80;
+    SLOT_LENGTH = (double) par("slotLength");
 }
 
 void WLANServer::changeChannelState(ChannelState newState){
