@@ -63,12 +63,14 @@ def plot_error_var():
         print(df)
 
         means = df.groupby('num_subsystems').mean()
-        cis = df.groupby('num_subsystems').apply(lambda x: getCI(x, confidence=0.95))
-
         print(means)
+
+        cis = df.groupby('num_subsystems').apply(lambda x: getCI(x, confidence=0.95))
         print(cis)
 
-        means.plot(kind="line", yerr=cis.value, ax=ax, label=config, color=colors[config], marker=markers[config])
+        # means.plot(kind="line", yerr=cis.value, ax=ax, label=config, color=colors[config], marker=markers[config])
+
+        means.plot(kind="line", ax=ax, label=config, color=colors[config], marker=markers[config])
 
     plt.grid(True)
 
