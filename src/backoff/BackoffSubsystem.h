@@ -35,7 +35,7 @@ protected:
     int MIN_EXPONENT;
     int MAX_EXPONENT;
 
-    bool _errorDependentExponent;
+    std::string _exponentType;
 
     cMessage * _waitForAckTimer;
 
@@ -54,6 +54,8 @@ protected:
      * Attempt a transmission
      */
     virtual void transmit();
+private:
+    simsignal_t backoffSignal;
 
 };
 

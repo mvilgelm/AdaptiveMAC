@@ -18,6 +18,9 @@ package contentionaccess.backoff;
 
 simple BackoffSubsystem {
     parameters:
+        @signal[backoff](type="double");
+        @statistic[choosenBackoff](title="choosen backoff"; source="backoff"; record=vector; intepolationmode=none);
+        
         double slotLength @unit(s);
         double pktDuration;  // in slots
         double ackDuration;  // in slots
@@ -25,7 +28,7 @@ simple BackoffSubsystem {
         int minExponent;
         int maxExponent;
         
-        bool errorDependentExponent = default(false);
+        string exponentType;
         
         // from subsystem
     	double sysA;

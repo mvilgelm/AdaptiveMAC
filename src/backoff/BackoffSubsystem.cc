@@ -34,6 +34,9 @@ BackoffSubsystem::~BackoffSubsystem() {
 }
 
 void BackoffSubsystem::initialize(){
+
+    backoffSignal = registerSignal("backoff");
+
     EV << "BackoffSubsystem::transmit() entering function." << endl;
 
     Subsystem::initialize();
@@ -42,9 +45,10 @@ void BackoffSubsystem::initialize(){
     MIN_EXPONENT = (int) par("minExponent");
     MAX_EXPONENT = (int) par("maxExponent");
 
-    _errorDependentExponent = (bool) par("errorDependentExponent");
+    _exponentType = std::string(par("exponentType").stringValue());
 
-    _boExponent = MIN_EXPONENT;
+    _boExponent = MAX_EXPONENT;
+
 }
 
 void BackoffSubsystem::processSelfMessage(cMessage * msg){
@@ -84,30 +88,50 @@ void BackoffSubsystem::successEvent(){
 }
 
 simtime_t BackoffSubsystem::getBackOffTime(){
-    if (!_errorDependentExponent) {
+
+    simtime_t t;
+
+    if (_exponentType == "regular") {
         // regular exponent
-        simtime_t t = this->intuniform(1, pow(2, _boExponent)) * SLOT_LENGTH;
+        t = this->intuniform(1, pow(2, _boExponent));
 
         if (_boExponent < MAX_EXPONENT)
             _boExponent++;
 
-        return t;
     }
-    else {
+    else if (_exponentType == "errorDependent") {
         // error dependent exponent
-        double error = this->loop->error;
+        double error_norm = fabs(this->loop->error);
 
-        int errorCls = MAX_EXPONENT - floor((log(error)/log(2)));
+        int errorCls = (MAX_EXPONENT-MIN_EXPONENT) - floor((log(error_norm)/log(2)));
 
         if (errorCls < 0)
             errorCls = 0;
 
         _boExponent = MIN_EXPONENT + errorCls;
 
-        simtime_t t = this->intuniform(1, pow(2, _boExponent)) * SLOT_LENGTH;
+        t = this->intuniform(1, pow(2, _boExponent));
 
-        return t;
+        EV << "BackoffSubsystem::getBackOffTime() choosing error-dependent exponent with class: " << errorCls
+                << ", boExponent: " << _boExponent << ", bo (in slots): " << t
+                << " and error norm " << error_norm << endl;
+
     }
+    else if (_exponentType == "inverse"){
+        // regular exponent
+        t = this->intuniform(1, pow(2, _boExponent));
+
+        if (_boExponent > MIN_EXPONENT)
+            _boExponent--;
+
+    }
+    else {
+
+    }
+
+    emit(backoffSignal, t.dbl());
+
+    return t*SLOT_LENGTH;
 }
 
 void BackoffSubsystem::processControlTimer(){
@@ -118,7 +142,10 @@ void BackoffSubsystem::processControlTimer(){
     if (_backOffTimer->isScheduled())
         cancelEvent(_backOffTimer);
 
-    _boExponent = MIN_EXPONENT;
+    if (_exponentType=="inverse")
+        _boExponent = MAX_EXPONENT;
+    else
+        _boExponent = MIN_EXPONENT;
 
     Subsystem::processControlTimer();
 }

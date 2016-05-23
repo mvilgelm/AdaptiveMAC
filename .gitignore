@@ -42,3 +42,5 @@ ui/com.simulte.configeditor/bin/
 *.mat
 *.pyc
 */.cmdenv-log
+*/results/*
+*/.idea/
